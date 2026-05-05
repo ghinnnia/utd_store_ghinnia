@@ -28,3 +28,4 @@ class DioClient {
     ));
   }
 }
+//network interceptor untuk logging request dan response, serta error handling.
