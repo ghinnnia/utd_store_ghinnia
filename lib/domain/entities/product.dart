@@ -1,3 +1,4 @@
+// Product entity
 class Product {
   final int id;
   final String title;
