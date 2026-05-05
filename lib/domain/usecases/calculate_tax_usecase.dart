@@ -1,3 +1,4 @@
+// Tax calculation logic
 class CalculateTaxUseCase {
   final int twoDigitLast = 46;
   final int loopCount = 46 * 10000000;
