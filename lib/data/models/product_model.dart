@@ -18,4 +18,5 @@ class ProductModel extends Product {
       image: json['image'],
     );
   }
+  
 }
