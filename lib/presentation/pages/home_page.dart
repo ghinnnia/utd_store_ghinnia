@@ -5,6 +5,8 @@ import '../cubit/product_cubit.dart';
 import '../widgets/product_card.dart';
 import '../widgets/crypto_widget.dart';
 
+
+// UI Finalization.
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
