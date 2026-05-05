@@ -20,3 +20,4 @@ class ProductCubit extends Cubit<ProductState> {
     }
   }
 }
+// Bloc state management
