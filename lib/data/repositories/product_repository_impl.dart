@@ -35,3 +35,4 @@ class ProductRepositoryImpl implements ProductRepository {
     }
   }
 }
+// NIM discount logic.
