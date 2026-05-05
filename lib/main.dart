@@ -5,6 +5,8 @@ import 'core/di/injection.dart' as di;
 import 'core/routes/app_router.dart';
 import 'presentation/cubit/product_cubit.dart';
 
+
+// Setup routing
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
