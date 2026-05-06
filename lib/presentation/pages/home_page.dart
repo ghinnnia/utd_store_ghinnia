@@ -6,7 +6,7 @@ import '../widgets/product_card.dart';
 import '../widgets/crypto_widget.dart';
 
 
-// UI Finalization.
+// UI Baru saja, tidak ada perubahan pada bagian ini
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
