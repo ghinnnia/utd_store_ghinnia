@@ -13,11 +13,11 @@ class ProductCubit extends Cubit<ProductState> {
   Future<void> fetchProducts() async {
     emit(ProductLoading());
     try {
+      // Memanggil usecase yang mengambil data dari Dio Interceptor
       final products = await getProductsUseCase();
       emit(ProductLoaded(products: products));
     } catch (e) {
-      emit(ProductError(message: e.toString()));
+      emit(ProductError(message: "Gagal mengambil data produk: ${e.toString()}"));
     }
   }
 }
-// Bloc state management
