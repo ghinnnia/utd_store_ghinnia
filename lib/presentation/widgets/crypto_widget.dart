@@ -1,4 +1,4 @@
-import 'dart:async'; // Tambahkan ini untuk StreamSubscription
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
@@ -17,22 +17,17 @@ class _CryptoWidgetState extends State<CryptoWidget> {
   String bitcoinPrice = 'Loading...';
   int batteryLevel = -1;
   bool isCalculating = false;
-  
-  // Tambahkan subscription agar bisa memantau stream secara real-time
   StreamSubscription? _cryptoSubscription;
 
   @override
   void initState() {
     super.initState();
-    _listenToPriceUpdates(); // Gunakan fungsi baru yang berbasis Stream
+    _listenToPriceUpdates();
     _loadBattery();
   }
 
-  // PERBAIKAN UTAMA: Menggunakan Stream.listen, bukan Callback/Connect manual
   void _listenToPriceUpdates() {
     final ws = GetIt.I<WebSocketService>();
-    
-    // Mendengarkan stream harga dari service yang sudah kita perbaiki tadi
     _cryptoSubscription = ws.bitcoinPriceStream.listen(
       (price) {
         if (mounted) {
@@ -50,32 +45,33 @@ class _CryptoWidgetState extends State<CryptoWidget> {
   }
 
   Future<void> _loadBattery() async {
+    // Mengambil data baterai via MethodChannel [cite: 44, 45]
     final level = await BatteryService.getBatteryLevel();
     setState(() => batteryLevel = level);
   }
 
+  // PERBAIKAN: Fungsi kalkulasi yang sudah dibersihkan
   Future<void> _calculateTax() async {
     setState(() => isCalculating = true);
     
-    // LOGIKA PERSONAL: Pastikan CalculateTaxUseCase().executeHeavyLoop() 
-    // sudah mengandung perulangan [2 Digit NIM] x 10.000.000
-    await compute(_runHeavyLoop, null);
+    // Menjalankan Isolate di background [cite: 39, 40]
+    // Pastikan CalculateTaxUseCase menggunakan 2 digit terakhir NIM (46)
+    final hasilPajak = await compute(_runHeavyLoop, null);
     
     if (mounted) {
       setState(() => isCalculating = false);
-      // Memanggil Native Toast melalui MethodChannel
-      BatteryService.showToast('Kalkulasi pajak selesai!');
+      
+      // Memunculkan Native Toast Android sesuai instruksi 
+      BatteryService.showToast('Kalkulasi Selesai! Hasil: $hasilPajak');
     }
   }
 
-  // Fungsi isolate harus static agar bisa dipanggil oleh compute
   static int _runHeavyLoop(void _) {
     return CalculateTaxUseCase().executeHeavyLoop();
   }
 
   @override
   void dispose() {
-    // Kritis: Batalkan subscription agar tidak terjadi memory leak
     _cryptoSubscription?.cancel();
     GetIt.I<WebSocketService>().disconnect();
     super.dispose();
@@ -101,7 +97,6 @@ class _CryptoWidgetState extends State<CryptoWidget> {
                 'Bitcoin (BTC)',
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
-              // Harga akan terupdate otomatis di sini
               Text(
                 bitcoinPrice,
                 style: const TextStyle(color: Colors.white, fontSize: 16),
@@ -132,7 +127,7 @@ class _CryptoWidgetState extends State<CryptoWidget> {
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.orange),
                       )
                     : const Text('Kalkulasi Pajak'),
               ),
