@@ -7,22 +7,23 @@ class WebSocketService {
   WebSocketChannel? _channel;
 
   /// Fungsi ini mengembalikan Stream berupa harga Bitcoin (String)
-  /// yang bisa langsung didengarkan (listen) oleh Cubit kamu.
   Stream<String> get bitcoinPriceStream {
-    // Membuka koneksi
     _channel = WebSocketChannel.connect(Uri.parse(_bitcoinUrl));
 
-    // Mengolah data mentah dari WebSocket menjadi angka harga saja
     return _channel!.stream.map((message) {
       try {
-        // Data dari Coincap formatnya: {"bitcoin":"63450.10"}
-        final Map<String, dynamic> data = jsonDecode(message);
-        return data['bitcoin'].toString();
+        // Mendecode pesan JSON dari Coincap 
+        final Map<String, dynamic> data = jsonDecode(message as String);
+        
+        // Mengambil nilai berdasarkan key "bitcoin"
+        if (data.containsKey('bitcoin')) {
+          return data['bitcoin'].toString();
+        }
+        return "0.0";
       } catch (e) {
-        return "Error parsing";
+        return "Error Parsing";
       }
-    }).asBroadcastStream(); 
-    // asBroadcastStream agar bisa didengarkan oleh banyak listener jika perlu
+    }).asBroadcastStream();
   }
 
   void disconnect() {
